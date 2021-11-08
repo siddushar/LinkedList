@@ -19,34 +19,53 @@ class LinkedList
    #push: given a data, add a new node in the end
    def push(value)
     puts "Pushing the values to the end of the linked list - #{value}"
+
     new_node = Node.new(value)
     if self.is_empty?
-      @head  = new_node
+      @head = new_node
     else
-      current_node = @head
-
-      while current_node.next_node != nil
-        current_node = current_node.next_node
+      last_node = @head
+      while(!last_node.next_node.nil?)
+        last_node = last_node.next_node
       end
-      current_node.next_node = new_node
+      last_node.next_node = new_node
     end
   end
 
-  #unshift: add a new node in the front
-
-  def unshift(value)
+  # prepend: adds a new node to the begining of the list
+  def prepend(value)
     puts "Pushing the values to the begining of the linked list - #{value}"
     new_node = Node.new(value)
-    if self.is_empty?
-      @head  = new_node
-    else
-      current_node = new_node
-      current_node.next_node = @head
-      @head = current_node
+     if self.is_empty?
+      @head = new_node
+     else
+      old_node = @head
+      @head = Node.new(value, old_node)
+     end
+  end
+
+  # remove: removes the value from the list
+  def remove(value)
+    return nil if self.is_empty?
+
+    current_node = @head
+    prev_node = nil
+    until(current_node.nil?)
+      if current_node.value == value
+        if !prev_node.nil?
+          prev_node.next_node = current_node.next_node
+          return
+        else
+          @head = current_node.next_node
+          return
+        end
+      end
+      prev_node = current_node
+      current_node = current_node.next_node
     end
   end
 
-  #pop: remove the last node and return it
+  # pop: removes the last node and return it
   def pop
     if self.is_empty?
         return "This list is currently empty"
@@ -61,8 +80,8 @@ class LinkedList
     last_node
   end
 
-   #shift: remove the first node and return it
-   def shift
+  # shift: removes the first node and return it
+  def shift
     if self.is_empty?
         return "This list is currently empty"
     else
@@ -72,10 +91,21 @@ class LinkedList
       @head = new_head
     end
     curr_head
-end
+  end
+
+  # unshift: find the value in the list and returns true/false
+  def find(value)
+    puts "Finding the value in the linked list - #{value}"
+    current_node = @head
+     while(!current_node.next_node.nil?)
+      return true if current_node.value == value
+      current_node = current_node.next_node
+     end
+     false
+  end
 
   
-  #pretty_print: print the current linked list as an array
+  # print: print the current linked list in a formatted way
   def print
       current_node = @head
       str = current_node.value.to_s
@@ -104,9 +134,9 @@ list = LinkedList.new
 list.push(30)
 list.push(15)
 list.push(5)
-list.unshift(50)
-list.unshift(90)
-list.unshift(100)
+list.prepend(50)
+list.prepend(90)
+list.prepend(100)
 list.print
 puts "after removing last item in the linked list"
 list.pop
@@ -115,3 +145,7 @@ puts "after removing first item in the linked list"
 list.shift
 list.print
 puts "size of linked list #{list.size}"
+puts list.find(30)
+puts list.find(5)
+list.remove(90)
+list.print
